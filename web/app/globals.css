@@ -139,4 +139,10 @@ button:disabled { opacity: 0.6; cursor: not-allowed; }
   background: rgba(255,255,255,0.04);
 }
 
+.stat-pill {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
 

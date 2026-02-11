@@ -167,7 +167,7 @@ export default function Page() {
       <div className="header">
         <h1>Naturalization Quiz</h1>
         <div className="stats">
-          <div className="pill">
+          <div className="pill stat-pill">
             Seen: {summary.uniqueSeen}/{summary.totalQuestions}
             <sup
               title="Alt/Option-click to reset seen"
@@ -175,9 +175,16 @@ export default function Page() {
               onClick={(e) => { if (e.altKey) updateStats((s) => resetSeen(s)); }}
             >0</sup>
           </div>
-          <div className="pill">Accuracy: {summary.accuracy}%</div>
-          <div className="pill">Attempts: {summary.totalAttempts}</div>
-          <div className="pill">Correct: {summary.totalCorrect}</div>
+          <div className="pill stat-pill">Accuracy: {summary.accuracy}%</div>
+          <div className="pill stat-pill">Attempts: {summary.totalAttempts}</div>
+          <button
+            className="secondary"
+            onClick={() => setShowNumbers((s) => !s)}
+            title="Show the question number from the official PDF"
+          >
+            {showNumbers ? "Hide #" : "Show #"}
+          </button>
+          <a className="pill" href="/stats">Stats</a>
           <button
             className="secondary"
             onClick={cycleTheme}
@@ -209,10 +216,6 @@ export default function Page() {
               </svg>
             )}
           </button>
-          <button className="secondary" onClick={() => setShowNumbers((s) => !s)}>
-            {showNumbers ? "Hide #" : "Show #"}
-          </button>
-          <a className="pill" href="/stats">Stats</a>
         </div>
       </div>
 
