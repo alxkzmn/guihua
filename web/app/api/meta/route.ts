@@ -5,7 +5,7 @@ import { RawQuestion } from "@/types";
 
 export async function GET() {
   try {
-    const questionsPath = path.join(process.cwd(), "..", "questions.json");
+    const questionsPath = path.join(process.cwd(), "questions.json");
     const raw = await fs.readFile(questionsPath, "utf-8");
     const all: RawQuestion[] = JSON.parse(raw);
     const numbers = all.map((q) => q.number);

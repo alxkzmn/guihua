@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     if (!Array.isArray(numbers) || numbers.length === 0) {
       return NextResponse.json({ error: "numbers array required" }, { status: 400 });
     }
-    const questionsPath = path.join(process.cwd(), "..", "questions.json");
+    const questionsPath = path.join(process.cwd(), "questions.json");
     const raw = await fs.readFile(questionsPath, "utf-8");
     const all: RawQuestion[] = JSON.parse(raw);
     const requestedSet = new Set(numbers);
