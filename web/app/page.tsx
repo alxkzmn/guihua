@@ -91,6 +91,54 @@ export default function Page() {
     }
   }, []);
 
+  const fetchErrorsOnly = React.useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    setSubmitted(false);
+    setAnswers({});
+    try {
+      const metaRes = await fetch("/api/meta", { cache: "no-store" });
+      if (!metaRes.ok) throw new Error("Failed to fetch meta");
+      const meta = await metaRes.json() as { total: number; numbers: number[] };
+
+      const s = statsRef.current;
+      const augmented = meta.numbers.map((n) => {
+        const seen = s.perQuestionSeen[n] || 0;
+        const correct = s.perQuestionCorrect[n] || 0;
+        const errors = Math.max(0, seen - correct);
+        const rand = Math.random();
+        return { n, seen, correct, errors, rand };
+      });
+
+      const errorsFirst = augmented
+        .filter((x) => x.errors > 0)
+        .sort((a, b) => (b.errors - a.errors) || (a.seen - b.seen) || (a.rand - b.rand))
+        .map((x) => x.n);
+
+      const prioritizedRest = augmented
+        .sort((a, b) => (a.seen - b.seen) || (b.errors - a.errors) || (a.rand - b.rand))
+        .map((x) => x.n);
+
+      const selected: number[] = [];
+      for (const n of errorsFirst) { if (!selected.includes(n)) selected.push(n); }
+      for (const n of prioritizedRest) { if (selected.length >= 20) break; if (!selected.includes(n)) selected.push(n); }
+      const finalNumbers = selected.slice(0, 20);
+
+      const batchRes = await fetch("/api/questions/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ numbers: finalNumbers }),
+      });
+      if (!batchRes.ok) throw new Error("Failed to fetch error-focused questions");
+      const batchJson = await batchRes.json() as { questions: QuizQuestion[] };
+      setData({ questions: batchJson.questions, total: meta.total });
+    } catch (e: any) {
+      setError(e.message || String(e));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   React.useEffect(() => {
     fetchQuestions();
   }, []);
@@ -208,6 +256,7 @@ export default function Page() {
         <div className="row">
           <button onClick={onSubmit} disabled={!data || submitted}>Submit</button>
           <button className="secondary" onClick={onRestart} disabled={loading}>Restart</button>
+          <button className="secondary" onClick={fetchErrorsOnly} disabled={loading} title="Compose test from your mistakes first">Errors only</button>
           {submitted && data && (
             <div className="pill" style={{ marginLeft: "auto" }}>
               Score: {
