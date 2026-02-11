@@ -160,6 +160,7 @@ export default function Page() {
   };
 
   const summary = getSummary(stats, data?.total || 256);
+  const allAnswered = data ? data.questions.every((_, idx) => (answers[idx] ?? -1) !== -1) : false;
 
   return (
     <div className="content">
@@ -254,7 +255,7 @@ export default function Page() {
 
       <div className="footer">
         <div className="row">
-          <button onClick={onSubmit} disabled={!data || submitted}>Submit</button>
+          <button onClick={onSubmit} disabled={!data || submitted || !allAnswered}>Submit</button>
           <button className="secondary" onClick={onRestart} disabled={loading}>Restart</button>
           <button className="secondary" onClick={fetchErrorsOnly} disabled={loading} title="Compose test from your mistakes first">Errors only</button>
           {submitted && data && (
@@ -266,6 +267,26 @@ export default function Page() {
               }%
             </div>
           )}
+        </div>
+        <div className="row" style={{ justifyContent: "flex-end" }}>
+          <a
+            className="pill"
+            href="https://github.com/alxkzmn/guihua"
+            target="_blank"
+            rel="noreferrer"
+            style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.72-2.78.62-3.37-1.38-3.37-1.38-.45-1.17-1.11-1.48-1.11-1.48-.9-.64.07-.63.07-.63 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.64-1.36-2.22-.26-4.56-1.14-4.56-5.08 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.29.1-2.69 0 0 .84-.28 2.75 1.05A9.2 9.2 0 0 1 12 6.84c.85 0 1.7.12 2.5.35 1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.43.1 2.69.64.72 1.03 1.63 1.03 2.75 0 3.95-2.34 4.82-4.57 5.07.36.32.68.95.68 1.92 0 1.39-.01 2.51-.01 2.86 0 .27.18.6.69.49 3.96-1.35 6.83-5.18 6.83-9.7C22 6.58 17.52 2 12 2z" />
+            </svg>
+            GitHub
+          </a>
         </div>
       </div>
     </div>
