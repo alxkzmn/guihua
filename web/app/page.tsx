@@ -258,7 +258,13 @@ export default function Page() {
 
       <div className="footer">
         <div className="row">
-          <button onClick={onSubmit} disabled={!data || submitted || !allAnswered}>Submit</button>
+          <button
+            onClick={onSubmit}
+            disabled={!data || submitted || !allAnswered}
+            title={!allAnswered && !submitted ? "Select an answer for every question to submit." : undefined}
+          >
+            Submit
+          </button>
           <button className="secondary" onClick={onRestart} disabled={loading}>New Test</button>
           <button
             className="secondary"
@@ -278,11 +284,6 @@ export default function Page() {
             </div>
           )}
         </div>
-        {!submitted && data && !allAnswered && (
-          <div className="muted" style={{ marginTop: 8 }}>
-            Select an answer for every question to submit.
-          </div>
-        )}
         <div className="row" style={{ justifyContent: "flex-end" }}>
           <a
             className="pill"
