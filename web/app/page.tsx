@@ -256,8 +256,15 @@ export default function Page() {
       <div className="footer">
         <div className="row">
           <button onClick={onSubmit} disabled={!data || submitted || !allAnswered}>Submit</button>
-          <button className="secondary" onClick={onRestart} disabled={loading}>Restart</button>
-          <button className="secondary" onClick={fetchErrorsOnly} disabled={loading} title="Compose test from your mistakes first">Errors only</button>
+          <button className="secondary" onClick={onRestart} disabled={loading}>New Test</button>
+          <button
+            className="secondary"
+            onClick={fetchErrorsOnly}
+            disabled={loading}
+            title="Start a new test consisting only of the previously failed questions"
+          >
+            Missed Questions
+          </button>
           {submitted && data && (
             <div className="pill" style={{ marginLeft: "auto" }}>
               Score: {
@@ -268,6 +275,11 @@ export default function Page() {
             </div>
           )}
         </div>
+        {!submitted && data && !allAnswered && (
+          <div className="muted" style={{ marginTop: 8 }}>
+            Select an answer for every question to submit.
+          </div>
+        )}
         <div className="row" style={{ justifyContent: "flex-end" }}>
           <a
             className="pill"
